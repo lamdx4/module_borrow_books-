@@ -1,0 +1,77 @@
+syntax = "proto3";
+package library;
+
+option csharp_namespace = "LibraryManagement.Presentation.Protos";
+
+service LibraryService {
+  rpc BorrowBook (BorrowRequest) returns (BorrowResponse);
+  rpc ReturnBook (ReturnRequest) returns (ReturnResponse);
+  rpc RenewBook (RenewRequest) returns (RenewResponse);
+  rpc ReserveBook (ReserveRequest) returns (ReserveResponse);
+  rpc PayFine (PayFineRequest) returns (PayFineResponse);
+  rpc GetBooks (GetBooksRequest) returns (GetBooksResponse);
+}
+
+message GetBooksRequest {
+}
+
+message BookItemResponse {
+  string maVachRFID = 1;
+  string tenSach = 2;
+  string isbn = 3;
+  string trangThai = 4;
+}
+
+message GetBooksResponse {
+  repeated BookItemResponse books = 1;
+}
+
+message BorrowRequest {
+  string maTheDocGia = 1;
+  repeated string danhSachMaVachRFID = 2; 
+}
+
+message BorrowResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ReturnRequest {
+  repeated string danhSachMaVachRFID = 1; 
+  string tinhTrangKiemTra = 2; // "Bình thường" or "Hư hỏng"
+}
+
+message ReturnResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message RenewRequest {
+  string maTheDocGia = 1;
+  repeated string danhSachMaVachRFID = 2; 
+}
+
+message RenewResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ReserveRequest {
+  string maTheDocGia = 1;
+  string dauSachId = 2; 
+}
+
+message ReserveResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message PayFineRequest {
+  string maTheDocGia = 1;
+}
+
+message PayFineResponse {
+  bool success = 1;
+  double tongTienDaThu = 2;
+  string message = 3;
+}

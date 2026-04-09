@@ -1,0 +1,78 @@
+@page "/books"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@using LibraryManagement.Presentation.Protos
+@inject LibraryService.LibraryServiceClient LibraryClient
+
+<PageTitle>Danh Mục Sách</PageTitle>
+
+<h2>📚 Danh Mục Sách & Tình Trạng</h2>
+
+<p>Đây là danh sách mock data đang nằm trong hệ thống RAM. Bạn hãy copy Mã Vạch RFID để paste vào Form mượn trả chức năng.</p>
+
+@if (books == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <table class="table table-striped table-hover mt-3">
+        <thead>
+            <tr>
+                <th>Tên Sách</th>
+                <th>ISBN</th>
+                <th>Mã RFID</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td class="fw-bold">@book.TenSach</td>
+                    <td>@book.Isbn</td>
+                    <td><span class="badge bg-secondary fs-6">@book.MaVachRFID</span></td>
+                    <td>
+                        @if (book.TrangThai == "SanSang")
+                        {
+                            <span class="badge bg-success">Sẵn Sàng</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">@book.TrangThai</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => CopyToClipboard(book.MaVachRFID)">
+                            Copy Mã
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BookItemResponse>? books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await LibraryClient.GetBooksAsync(new GetBooksRequest());
+            books = response.Books.ToList();
+        }
+        catch (Exception)
+        {
+            // Do nothing on failure to keep UI clean, or show toast
+        }
+    }
+
+    private void CopyToClipboard(string text)
+    {
+        // For simplicity in Server blazor without JS interop, we just don't do real clipboard.
+        // It's sufficient for visual lookup.
+    }
+}

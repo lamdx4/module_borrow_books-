@@ -1,0 +1,2 @@
+obj\Debug\net10.0/Library.cs \
+obj\Debug\net10.0/LibraryGrpc.cs: ../LibraryManagement.Presentation/Protos/Library.proto

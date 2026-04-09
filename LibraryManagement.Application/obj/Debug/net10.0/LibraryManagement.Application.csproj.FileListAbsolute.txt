@@ -1,0 +1,15 @@
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.csproj.AssemblyReference.cache
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.GeneratedMSBuildEditorConfig.editorconfig
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.AssemblyInfoInputs.cache
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.AssemblyInfo.cs
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.csproj.CoreCompileInputs.cache
+d:\Projects\LibraryManagement\LibraryManagement.Application\bin\Debug\net10.0\LibraryManagement.Application.deps.json
+d:\Projects\LibraryManagement\LibraryManagement.Application\bin\Debug\net10.0\LibraryManagement.Application.dll
+d:\Projects\LibraryManagement\LibraryManagement.Application\bin\Debug\net10.0\LibraryManagement.Application.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Application\bin\Debug\net10.0\LibraryManagement.Domain.dll
+d:\Projects\LibraryManagement\LibraryManagement.Application\bin\Debug\net10.0\LibraryManagement.Domain.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryM.C4F4E017.Up2Date
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.dll
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\refint\LibraryManagement.Application.dll
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\ref\LibraryManagement.Application.dll

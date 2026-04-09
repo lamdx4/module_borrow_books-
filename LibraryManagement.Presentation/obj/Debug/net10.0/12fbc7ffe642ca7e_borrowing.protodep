@@ -1,0 +1,2 @@
+obj\Debug\net10.0\Protos/Borrowing.cs \
+obj\Debug\net10.0\Protos/BorrowingGrpc.cs: Protos/borrowing.proto

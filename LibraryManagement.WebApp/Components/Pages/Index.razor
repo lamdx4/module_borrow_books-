@@ -1,0 +1,71 @@
+@page "/"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@inject SessionStateService SessionState
+@inject NavigationManager NavigationManager
+
+<PageTitle>Trang Chủ Thư Viện</PageTitle>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4 text-center">
+        <h1 class="mb-4">Hệ Thống Thư Viện</h1>
+        @if (!SessionState.IsLoggedIn)
+        {
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-3">Bắt Đầu Giao Dịch</h4>
+                <div class="input-group mb-3">
+                    <input type="text" @bind="inputTheId" class="form-control form-control-lg text-center" placeholder="Quét mã Thẻ Độc Giả..." @onkeyup="HandleKeyUp" />
+                </div>
+                <button class="btn btn-primary btn-lg w-100" @onclick="Login">Tiếp Tục</button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                <h4>Đang thao tác cho thẻ: @SessionState.CurrentReaderId</h4>
+                <button class="btn btn-outline-danger mt-2" @onclick="Logout">Kết thúc / Quét thẻ khác</button>
+            </div>
+            
+            <div class="d-grid gap-3 mt-4">
+                <a href="/borrow" class="btn btn-outline-primary btn-lg">Mượn Sách</a>
+                <a href="/return" class="btn btn-outline-success btn-lg">Trả Sách</a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string inputTheId = "THE001"; // Default seed data value for quick demo
+
+    protected override void OnInitialized()
+    {
+        SessionState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        SessionState.OnChange -= StateHasChanged;
+    }
+
+    private void Login()
+    {
+        if (!string.IsNullOrWhiteSpace(inputTheId))
+        {
+            SessionState.SetReaderId(inputTheId.Trim());
+        }
+    }
+
+    private void Logout()
+    {
+        SessionState.Logout();
+        inputTheId = "";
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Login();
+        }
+    }
+}

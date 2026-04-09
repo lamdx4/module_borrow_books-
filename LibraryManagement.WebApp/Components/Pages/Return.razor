@@ -1,0 +1,121 @@
+@page "/return"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@using LibraryManagement.Presentation.Protos
+@inject SessionStateService SessionState
+@inject LibraryService.LibraryServiceClient LibraryClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Trả Sách</PageTitle>
+
+@if (!SessionState.IsLoggedIn)
+{
+    <div class="alert alert-warning">Vui lòng quét thẻ độc giả ở Trang Chủ trước!</div>
+    <a href="/" class="btn btn-primary">Về Trang Chủ</a>
+}
+else
+{
+    <h2>Trả Sách - Độc giả: @SessionState.CurrentReaderId</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5>Quét mã sách (RFID) trả</h5>
+                <div class="input-group mb-3">
+                    <input type="text" @bind="rfidInput" class="form-control" placeholder="Mã RFID sách..." @onkeyup="HandleKeyUp" />
+                    <button class="btn btn-secondary" @onclick="AddBook">Thêm</button>
+                </div>
+            </div>
+
+            <div class="card p-3 shadow-sm mt-3">
+                 <h5>Tình Trạng Sách</h5>
+                 <select class="form-select mb-3" @bind="tinhTrangKiemTra">
+                     <option value="Bình thường">Bình thường</option>
+                     <option value="Hư hỏng">Hư hỏng (Rách, ướt)</option>
+                 </select>
+            </div>
+            
+            @if (message != null)
+            {
+                <div class="alert alert-@(isSuccess ? "success" : "danger") mt-3">
+                    @message
+                </div>
+            }
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5>Sách Đang Trả (@booksToReturn.Count)</h5>
+                <ul class="list-group mb-3">
+                    @foreach (var book in booksToReturn)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @book
+                            <button class="btn btn-sm btn-danger" @onclick="() => RemoveBook(book)">Xóa</button>
+                        </li>
+                    }
+                    @if (booksToReturn.Count == 0)
+                    {
+                        <li class="list-group-item text-muted">Chưa quét cuốn nào...</li>
+                    }
+                </ul>
+                <button class="btn btn-success btn-lg w-100" disabled="@(booksToReturn.Count == 0)" @onclick="SubmitReturn">XÁC NHẬN TRẢ</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string rfidInput = "";
+    private string tinhTrangKiemTra = "Bình thường";
+    private List<string> booksToReturn = new();
+    private string? message;
+    private bool isSuccess = false;
+
+    private void AddBook()
+    {
+        if (!string.IsNullOrWhiteSpace(rfidInput) && !booksToReturn.Contains(rfidInput))
+        {
+            booksToReturn.Add(rfidInput.Trim());
+            rfidInput = "";
+            message = null;
+        }
+    }
+
+    private void RemoveBook(string rfid)
+    {
+        booksToReturn.Remove(rfid);
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddBook();
+        }
+    }
+
+    private async Task SubmitReturn()
+    {
+        try
+        {
+            var req = new ReturnRequest { TinhTrangKiemTra = tinhTrangKiemTra };
+            req.DanhSachMaVachRFID.AddRange(booksToReturn);
+
+            var resp = await LibraryClient.ReturnBookAsync(req);
+            
+            isSuccess = resp.Success;
+            message = resp.Message;
+            
+            if (isSuccess)
+            {
+                booksToReturn.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            message = "Lỗi kết nối gRPC: " + ex.Message;
+        }
+    }
+}

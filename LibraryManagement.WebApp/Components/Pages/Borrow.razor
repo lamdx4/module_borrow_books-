@@ -1,0 +1,112 @@
+@page "/borrow"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@using LibraryManagement.Presentation.Protos
+@inject SessionStateService SessionState
+@inject LibraryService.LibraryServiceClient LibraryClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Mượn Sách</PageTitle>
+
+@if (!SessionState.IsLoggedIn)
+{
+    <div class="alert alert-warning">Vui lòng quét thẻ 독 giả ở Trang Chủ trước!</div>
+    <a href="/" class="btn btn-primary">Về Trang Chủ</a>
+}
+else
+{
+    <h2>Mượn Sách - Độc giả: @SessionState.CurrentReaderId</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5>Quét mã sách (RFID)</h5>
+                <div class="input-group mb-3">
+                    <input type="text" @bind="rfidInput" class="form-control" placeholder="Mã RFID sách..." @onkeyup="HandleKeyUp" />
+                    <button class="btn btn-secondary" @onclick="AddBook">Thêm</button>
+                </div>
+            </div>
+            
+            @if (message != null)
+            {
+                <div class="alert alert-@(isSuccess ? "success" : "danger") mt-3">
+                    @message
+                </div>
+            }
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5>Sách Chuẩn Bị Mượn (@booksToBorrow.Count)</h5>
+                <ul class="list-group mb-3">
+                    @foreach (var book in booksToBorrow)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @book
+                            <button class="btn btn-sm btn-danger" @onclick="() => RemoveBook(book)">Xóa</button>
+                        </li>
+                    }
+                    @if (booksToBorrow.Count == 0)
+                    {
+                        <li class="list-group-item text-muted">Chưa quét cuốn nào... (Thử RFID001, RFID003)</li>
+                    }
+                </ul>
+                <button class="btn btn-success btn-lg w-100" disabled="@(booksToBorrow.Count == 0)" @onclick="SubmitBorrow">XÁC NHẬN MƯỢN</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string rfidInput = "";
+    private List<string> booksToBorrow = new();
+    private string? message;
+    private bool isSuccess = false;
+
+    private void AddBook()
+    {
+        if (!string.IsNullOrWhiteSpace(rfidInput) && !booksToBorrow.Contains(rfidInput))
+        {
+            booksToBorrow.Add(rfidInput.Trim());
+            rfidInput = "";
+            message = null;
+        }
+    }
+
+    private void RemoveBook(string rfid)
+    {
+        booksToBorrow.Remove(rfid);
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddBook();
+        }
+    }
+
+    private async Task SubmitBorrow()
+    {
+        try
+        {
+            var req = new BorrowRequest { MaTheDocGia = SessionState.CurrentReaderId };
+            req.DanhSachMaVachRFID.AddRange(booksToBorrow);
+
+            var resp = await LibraryClient.BorrowBookAsync(req);
+            
+            isSuccess = resp.Success;
+            message = resp.Message;
+            
+            if (isSuccess)
+            {
+                booksToBorrow.Clear(); // Reset on success
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            message = "Lỗi kết nối gRPC: " + ex.Message;
+        }
+    }
+}

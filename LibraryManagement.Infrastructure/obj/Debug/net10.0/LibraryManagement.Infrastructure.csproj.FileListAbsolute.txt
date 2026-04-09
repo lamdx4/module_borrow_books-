@@ -1,0 +1,17 @@
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Infrastructure.deps.json
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Infrastructure.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Infrastructure.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Application.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Domain.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Application.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\bin\Debug\net10.0\LibraryManagement.Domain.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.csproj.AssemblyReference.cache
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.AssemblyInfoInputs.cache
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.AssemblyInfo.cs
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.csproj.CoreCompileInputs.cache
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryM.7458E269.Up2Date
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\refint\LibraryManagement.Infrastructure.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.pdb
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\ref\LibraryManagement.Infrastructure.dll
