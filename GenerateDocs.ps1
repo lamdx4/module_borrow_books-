@@ -19,7 +19,7 @@ flowchart TD
 
     Web -->|gRPC Remote Call| Pres
     Pres -.->|Dependency Injection| Infra
-    Pres -->|MediatR Send(Command/Query)| App
+    Pres -->|MediatR Command and Query| App
     Infra -.->|Implements Interfaces| App
     Infra -->|References Objects| Dom
     App -->|Encapsulates Logic| Dom
