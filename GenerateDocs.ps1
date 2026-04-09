@@ -6,8 +6,18 @@ $content = @'
 
 ## I. Phân tích thiết kế
 
-### Sơ đồ Cấu trúc Phụ thuộc (Dependency Diagram)
-Sơ đồ dưới đây thể hiện "The Dependency Rule" (Quy tắc phụ thuộc hướng tâm) được áp dụng tuyệt đối trong dự án. Các mũi tên liền mạch thể hiện tham chiếu Project (Project Reference), mũi tên đứt nét thể hiện triển khai kỹ thuật (Interface Implementation & DI).
+*(Phần này đang để trống - sẽ được bổ sung tài liệu sơ đồ thiết kế/UML chi tiết sau)*
+
+---
+
+## II. Triển khai hệ thống
+
+### 1. Tổng quan Kiến trúc
+
+Dự án Hệ thống Quản lý Thư viện được phát triển dựa trên mô hình Clean Architecture. Thiết kế này giúp định tuyến rõ ràng giữa logic nghiệp vụ và các khía cạnh kỹ thuật (cơ sở dữ liệu, giao diện, API giao tiếp).
+
+#### 1.1 Sơ đồ Cấu trúc Phụ thuộc (Dependency Diagram)
+Sơ đồ dưới đây thể hiện "The Dependency Rule" (Quy tắc phụ thuộc hướng tâm) được áp dụng nghiêm ngặt trong dự án. Các mũi tên liền mạch thể hiện tham chiếu Project (Project Reference), mũi tên đứt nét thể hiện triển khai kỹ thuật (Interface Implementation & DI).
 
 ```mermaid
 flowchart TD
@@ -25,19 +35,12 @@ flowchart TD
     App -->|Encapsulates Logic| Dom
 ```
 
----
-
-## II. Triển khai hệ thống
-
-### 1. Tổng quan Kiến trúc
-
-Dự án Hệ thống Quản lý Thư viện được phát triển dựa trên mô hình Clean Architecture. Thiết kế này giúp định tuyến rõ ràng giữa logic nghiệp vụ và các khía cạnh kỹ thuật (cơ sở dữ liệu, giao diện, API giao tiếp).
-
-Các mẫu thiết kế nổi bật được áp dụng bao gồm:
-- CQRS (Command Query Responsibility Segregation) và thư viện MediatR để chia tách hệ thống xử lý Request.
-- Repository Pattern và UnitOfWork để tập trung hóa thao tác truy xuất dữ liệu.
-- In-Memory Data Store áp dụng `ConcurrentDictionary` để thao tác an toàn trong môi trường đa luồng cục bộ.
-- Protocol Buffers và gRPC thực thi các giao tiếp nội bào tốc độ cao.
+#### 1.2 Các kỹ thuật và mẫu thiết kế (Design Patterns)
+Các kiến trúc nền tảng được áp dụng bao gồm:
+- CQRS (Command Query Responsibility Segregation) và thư viện MediatR để chia tách hệ thống xử lý Request theo hành vi.
+- Repository Pattern và UnitOfWork để quản lý logic truy xuất và lưu trữ dữ liệu tập trung.
+- In-Memory Data Store với cấu trúc `ConcurrentDictionary` để thao tác và mô phỏng giao dịch CSDL an toàn trong môi trường đa luồng tải cao.
+- Protocol Buffers và gRPC thực thi các giao tiếp xuyên client tốc độ cao.
 
 ---
 
