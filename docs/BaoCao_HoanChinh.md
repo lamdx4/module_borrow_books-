@@ -1,7 +1,7 @@
 ﻿# TÀI LIỆU KỸ THUẬT: HỆ THỐNG QUẢN LÝ THƯ VIỆN
 
-## I. Phân tích thiết kế
-### 1.1 Biểu đồ Use Case tổng quát hệ thống
+## **I. Phân tích thiết kế**
+### **1.1 Biểu đồ Use Case tổng quát hệ thống**
 Biểu đồ Use Case tổng quát cho biết các chức năng chính của hệ thống và các tác nhân tương tác với hệ thống, bao gồm Thủ thư, Độc giả và Hệ thống định kỳ. Các nghiệp vụ chính bao gồm: Mượn sách, Trả sách, Gia hạn sách, Đặt trước sách, Xử lý vi phạm / Thu tiền phạt và Gửi thông báo nhắc hạn. 
 
 <p align="center">
