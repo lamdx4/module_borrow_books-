@@ -90,3 +90,4 @@ d:\Projects\LibraryManagement\LibraryManagement.WebApp\obj\Debug\net10.0\refint\
 d:\Projects\LibraryManagement\LibraryManagement.WebApp\obj\Debug\net10.0\LibraryManagement.WebApp.pdb
 d:\Projects\LibraryManagement\LibraryManagement.WebApp\obj\Debug\net10.0\LibraryManagement.WebApp.genruntimeconfig.cache
 d:\Projects\LibraryManagement\LibraryManagement.WebApp\obj\Debug\net10.0\ref\LibraryManagement.WebApp.dll
+d:\Projects\LibraryManagement\LibraryManagement.WebApp\obj\Debug\net10.0\LibraryManagement.WebApp.sourcelink.json

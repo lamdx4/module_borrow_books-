@@ -30,8 +30,8 @@ public class CuonSachRepository : ICuonSachRepository
 
         var sach1 = new CuonSach { Id = "CS001", MaVachRFID = "RFID001", ISBN = dauSach1.ISBN, DauSach = dauSach1, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.SanSang };
         var sach2 = new CuonSach { Id = "CS002", MaVachRFID = "RFID002", ISBN = dauSach1.ISBN, DauSach = dauSach1, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.DangMuon };
-        var sach3 = new CuonSach { Id = "CS003", MaVachRFID = "RFID003", ISBN = dauSach2.ISBN, DauSach = dauSach2, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.SanSang };
-        var sach4 = new CuonSach { Id = "CS004", MaVachRFID = "RFID004", ISBN = dauSach3.ISBN, DauSach = dauSach3, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.SanSang };
+        var sach3 = new CuonSach { Id = "CS003", MaVachRFID = "RFID003", ISBN = dauSach2.ISBN, DauSach = dauSach2, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.DangMuon };
+        var sach4 = new CuonSach { Id = "CS004", MaVachRFID = "RFID004", ISBN = dauSach3.ISBN, DauSach = dauSach3, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.DangMuon };
         var sach5 = new CuonSach { Id = "CS005", MaVachRFID = "RFID005", ISBN = dauSach4.ISBN, DauSach = dauSach4, TinhTrangVatLy = TinhTrangVatLy.Uot, TrangThai = TrangThaiCuonSach.HuHong };
         var sach6 = new CuonSach { Id = "CS006", MaVachRFID = "RFID006", ISBN = dauSach5.ISBN, DauSach = dauSach5, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.SanSang };
         var sach7 = new CuonSach { Id = "CS007", MaVachRFID = "RFID007", ISBN = dauSach5.ISBN, DauSach = dauSach5, TinhTrangVatLy = TinhTrangVatLy.BinhThuong, TrangThai = TrangThaiCuonSach.DaDatTruoc };

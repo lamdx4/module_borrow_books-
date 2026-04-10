@@ -112,6 +112,33 @@ rm LibraryManagement.Infrastructure/Class1.cs
 '@
 [System.IO.File]::WriteAllText($outputFile, $content, [System.Text.Encoding]::UTF8)
 
+$fileExplanations = @{
+    "CuonSach.cs" = "Thực thể hiện vật đại diện cho một quyển sách cụ thể (phân biệt qua RFID)."
+    "DauSach.cs" = "Thực thể danh mục chứa thông tin meta (ISBN, Tên sách, Tác giả)."
+    "DocGia.cs" = "Quản lý thông tin tài khoản người dùng và hạn thẻ."
+    "GiaoDichMuonTra.cs" = "Ghi nhận tiến trình mượn/trả, dùng để tính toán trễ hạn."
+    "PhieuPhat.cs" = "Thực thể ghi chú hóa đơn lỗi khi người dùng làm hỏng sách hoặc trễ hạn."
+    "PhieuDatTruoc.cs" = "Lưu vết yêu cầu đặt chỗ đợi ấn bản trả về."
+    "LibraryManagementException.cs" = "Ngoại lệ nghiệp vụ gốc (Domain Exception), dùng để bọc các vi phạm quy tắc."
+    "LimitExceededException.cs" = "Bắt lỗi khi độc giả mượn hoặc gia hạn quá định mức cho phép."
+    "BorrowBookCommandHandler.cs" = "Điều phối quy trình Truy xuất UC-01, xác thực thẻ và trạng thái sách trước khi lập giao dịch."
+    "ReturnBookCommandHandler.cs" = "Điều phối vòng lặp kiểm duyệt trả sách UC-02, sinh hóa đơn tự động nếu làm hỏng."
+    "RenewBookCommandHandler.cs" = "Xử lý UC-03. Chặn gia hạn nếu trễ hạn hoặc kẹt gạch đặt trước."
+    "ReserveBookCommandHandler.cs" = "Xử lý UC-04. Cản tính năng nếu kho vẫn còn sách (thay vì buộc người dùng đợi)."
+    "PayFineCommandHandler.cs" = "Kích hoạt vòng lặp chốt toán dư nợ, đồng thời phục hồi thẻ (Unlock)."
+    "CuonSachRepository.cs" = "Triển khai truy xuất Database dạng Tạm bộ nhớ (In-Memory). Khởi tạo sẵn Data Mockup 8 phân bản ở đa trạng thái để test."
+    "GiaoDichMuonTraRepository.cs" = "Quản lý biến lưu trữ Thread-safe. Tích hợp sẵn 3 giao dịch kiểm nghiệm Lỗi Trễ hạn và Kịch khung."
+    "LibraryGrpcService.cs" = "Gateway duy nhất ứng dụng giao thức gRPC tiếp nhận RPC từ Client dội xuống, bọc Try-Catch để gom toàn bộ Domain Exception thành chuỗi Response trả về UI cực gọn gàng."
+    "Program.cs" = "Nền tảng khởi tạo WebApp, trỏ Client Injection Port về phía Backend gRPC (bỏ qua xác thực SSL cục bộ)."
+    "Borrow.razor" = "Component điều hướng List RFID, bind Model vào State và gọi GRPC."
+    "Return.razor" = "Component bổ sung trường đánh giá Tình Trạng Hư hỏng."
+    "Renew.razor" = "Giao diện nạp mảng RFID sách muốn Gia hạn."
+    "Reserve.razor" = "Khung giao diện truyền lệnh ISBN đặt gạch."
+    "PayFines.razor" = "Khu vực tính và in kết quả số tiền tất toán."
+    "Index.razor" = "Xử lý nghiệp vụ đăng nhập nhanh qua quét Mã thẻ ảo (Session)."
+    "Books.razor" = "Component tải dữ liệu tĩnh thông qua Stream gRPC."
+}
+
 function Add-Section {
     param([string]$title, [string]$desc, [string[]]$paths)
     [System.IO.File]::AppendAllText($outputFile, "#### $title`n`n", [System.Text.Encoding]::UTF8)
@@ -119,6 +146,11 @@ function Add-Section {
 
     foreach ($path in $paths) {
         $files = Get-ChildItem -Path $path -File -Recurse -Include *.cs,*.razor,*.proto | Sort-Object Name
+        
+        if ($path -match "LibraryManagement.WebApp") {
+            $files = $files | Where-Object { $_.FullName -match "Components\\Pages" -or $_.Name -eq "Program.cs" }
+        }
+
         foreach ($f in $files) {
             if ($f.FullName -match "\\bin\\" -or $f.FullName -match "\\obj\\" -or $f.FullName -match "GlobalUsings.g.cs" -or $f.FullName -match "\.g\.cs" -or $f.FullName -match "AssemblyAttributes") { continue }
             
@@ -127,9 +159,17 @@ function Add-Section {
             if ($f.Extension -eq ".proto") { $ext = "protobuf" }
             
             $relPath = $f.FullName -replace "(?i)^d:\\Projects\\LibraryManagement\\", ""
+            $fileName = $f.Name
             
-            $header = "> **File:** " + $relPath + "`n"
+            $header = "- **File:** ``$relPath`` `n"
             [System.IO.File]::AppendAllText($outputFile, $header, [System.Text.Encoding]::UTF8)
+            
+            if ($fileExplanations.ContainsKey($fileName)) {
+                [System.IO.File]::AppendAllText($outputFile, "- **Mô tả nhiệm vụ:** *" + $fileExplanations[$fileName] + "*`n`n", [System.Text.Encoding]::UTF8)
+            } else {
+                [System.IO.File]::AppendAllText($outputFile, "`n", [System.Text.Encoding]::UTF8)
+            }
+
             $startTag = '```' + $ext + "`n"
             [System.IO.File]::AppendAllText($outputFile, $startTag, [System.Text.Encoding]::UTF8)
             
@@ -201,5 +241,56 @@ Add-Section "Tầng Application" $descApp @("d:\Projects\LibraryManagement\Libra
 Add-Section "Tầng Infrastructure" $descInfra @("d:\Projects\LibraryManagement\LibraryManagement.Infrastructure")
 Add-Section "Tầng Presentation (gRPC Server)" $descAPI @("d:\Projects\LibraryManagement\LibraryManagement.Presentation")
 Add-Section "Tầng Web Application" $descUI @("d:\Projects\LibraryManagement\LibraryManagement.WebApp")
+
+$demoUI = @'
+
+---
+
+### 5. Kết quả Triển khai Giao diện (Demo UI)
+Dưới đây là hình ảnh thực tế chức năng của hệ thống WebApp tương tác với gRPC Backend. Từng Case ngoại lệ (Sad paths) đặc thù của hệ thống cũng được bắt gọn từ quá trình xử lý Domain/Application và hiển thị cho người dùng:
+
+#### 5.1 Màn hình Danh Mục Sách
+Liệt kê chi tiết tình trạng kho lưu trữ In-Memory:
+![Danh mục sách](<assets/borrow-book.png>)
+
+#### 5.2 Màn hình Mượn Sách (UC-01)
+Luồng Use-Case chạy thành công:
+![Mượn sách thành công](<assets/Mượn sách thành công.png>)
+
+Hệ thống xử lý lỗi khép kín (Ví dụ mượn sách không có sẵn, hoặc mượn sách mang mã số rác `4dasdasda`):
+![Lỗi mượn sách 2](<assets/Cuốn sách mã 4dasdasda không sẵn sàng để mượn..png>)
+![Lỗi mượn sách](<assets/Cuốn sách mã RFID001 không sẵn sàng để mượn..png>)
+
+#### 5.3 Màn hình Trả Sách (UC-02)
+Luồng Use-Case trả sách thành công:
+![Trả sách thành công](<assets/Trả sách thành công.png>)
+
+Hệ thống xử lý bắt lỗi nghiệp vụ ở tầng Domain/Application (trả cuốn sách không nằm trong trạng thái đang mượn):
+![Lỗi trả sách](<assets/Mã lỗi Cuốn sách mang mã RFID RFID008 không nằm trong trạng thái đang được mượn.png>)
+
+#### 5.4 Màn hình Gia Hạn Sách (UC-03)
+Xử lý gia hạn sách thành công (bấm nút gia hạn thay đổi thuộc tính sách hợp lệ):
+![Gia hạn sách thành công](<assets/Gia hạn sách thành công.png>)
+
+Bắt lỗi ngoại lệ khi sách đã quá hạn (Sách `RFID003` trễ hạn 1 ngày):
+![Lỗi gia hạn quá hạn](<assets/Sách RFID003 đã quá hạn trả, không thể gia hạn..png>)
+
+Bắt lỗi sách đang bị kẹt mượn vì người dùng khác đã đặt trước:
+![Lỗi kẹt đặt trước](<assets/Không thể gia hạn sách 978-0131103627 vì đã có người đặt trước..png>)
+
+#### 5.5 Màn hình Đặt Trước (UC-04)
+Thực thi Use Case đăng ký mượn một ấn bản:
+![Đặt trước sách thành công](<assets/Đặt trước sách thành công.png>)
+
+Ngăn chặn độc giả tham lam xí chỗ quá số lượng cho phép:
+![Lỗi đặt nhiều sách](<assets/Bạn đã đạt giới hạn đặt trước tối đa (3 cuốn)..png>)
+
+#### 5.6 Màn hình Nộp Phạt & Mở khóa (UC-05)
+Chốt sổ hệ thống thu phạt (Mở khóa các tài khoản nợ đọng, và thanh toán thành công):
+![KẾT QUẢ GIAO DỊCH](<assets/KẾT QUẢ GIAO DỊCH.png>)
+
+'@
+
+[System.IO.File]::AppendAllText($outputFile, $demoUI, [System.Text.Encoding]::UTF8)
 
 Write-Host "Hoan thanh lap BaoCao_HoanChinh.md"

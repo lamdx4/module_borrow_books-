@@ -15,3 +15,4 @@ d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0
 d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\refint\LibraryManagement.Infrastructure.dll
 d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.pdb
 d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\ref\LibraryManagement.Infrastructure.dll
+d:\Projects\LibraryManagement\LibraryManagement.Infrastructure\obj\Debug\net10.0\LibraryManagement.Infrastructure.sourcelink.json

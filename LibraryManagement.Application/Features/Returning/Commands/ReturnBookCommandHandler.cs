@@ -3,6 +3,8 @@ using LibraryManagement.Application.Interfaces;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Enums;
 
+using LibraryManagement.Domain.Exceptions;
+
 namespace LibraryManagement.Application.Features.Returning.Commands;
 
 public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand, bool>
@@ -38,7 +40,10 @@ public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand, bool>
         foreach (var rfid in request.DanhSachMaVachRFID)
         {
             var trans = await _giaoDichRepository.GetActiveTransactionByBookAsync(rfid);
-            if (trans == null) continue; // Khong tim thay giao dich mượn cho sách này
+            if (trans == null) 
+            {
+                throw new LibraryManagementException($"Mã lỗi: Cuốn sách mang mã RFID '{rfid}' không nằm trong trạng thái đang được mượn. Quá trình trả sách đã bị hủy bỏ.");
+            }
 
             var cuonSach = await _cuonSachRepository.GetByMaVachAsync(rfid);
             if (cuonSach == null) continue;

@@ -13,7 +13,6 @@ public class GiaoDichMuonTraRepository : IGiaoDichMuonTraRepository
     {
         _data = new ConcurrentDictionary<string, GiaoDichMuonTra>();
         
-        // Seed Data
         var giaoDich1 = new GiaoDichMuonTra
         {
             Id = "GD001",
@@ -25,6 +24,32 @@ public class GiaoDichMuonTraRepository : IGiaoDichMuonTraRepository
             TrangThaiGD = TrangThaiGiaoDich.DangMuon
         };
         _data.TryAdd(giaoDich1.Id, giaoDich1);
+
+        // Seed GD2: Quá hạn để test Exception "Đã quá hạn trả"
+        var giaoDich2 = new GiaoDichMuonTra
+        {
+            Id = "GD002",
+            MaThe = "THE001",
+            MaVachRFID = "RFID003",
+            NgayMuon = DateTime.Now.AddDays(-15),
+            NgayDenHan = DateTime.Now.AddDays(-1), // Quá hạn 1 ngày
+            SoLanGiaHan = 0,
+            TrangThaiGD = TrangThaiGiaoDich.DangMuon
+        };
+        _data.TryAdd(giaoDich2.Id, giaoDich2);
+
+        // Seed GD3: Hết lượt gia hạn
+        var giaoDich3 = new GiaoDichMuonTra
+        {
+            Id = "GD003",
+            MaThe = "THE001",
+            MaVachRFID = "RFID004", // Phải đảm bảo RFID004 đang được đánh dấu là DangMuon trong CuonSach
+            NgayMuon = DateTime.Now.AddDays(-20),
+            NgayDenHan = DateTime.Now.AddDays(2),
+            SoLanGiaHan = 3, // Vượt giới hạn
+            TrangThaiGD = TrangThaiGiaoDich.DangMuon
+        };
+        _data.TryAdd(giaoDich3.Id, giaoDich3);
     }
 
     public Task<GiaoDichMuonTra?> GetActiveTransactionByBookAsync(string maVachRfid)

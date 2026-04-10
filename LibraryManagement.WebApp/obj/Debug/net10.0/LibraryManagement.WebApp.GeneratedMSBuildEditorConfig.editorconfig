@@ -46,6 +46,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[d:/Projects/LibraryManagement/LibraryManagement.WebApp/Components/Pages/PayFines.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQYXlGaW5lcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/Projects/LibraryManagement/LibraryManagement.WebApp/Components/Pages/Renew.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZW5ldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/Projects/LibraryManagement/LibraryManagement.WebApp/Components/Pages/Reserve.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZXNlcnZlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [d:/Projects/LibraryManagement/LibraryManagement.WebApp/Components/Pages/Return.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZXR1cm4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

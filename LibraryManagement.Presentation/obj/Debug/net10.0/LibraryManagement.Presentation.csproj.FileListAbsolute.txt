@@ -50,3 +50,4 @@ d:\Projects\LibraryManagement\LibraryManagement.Presentation\obj\Debug\net10.0\r
 d:\Projects\LibraryManagement\LibraryManagement.Presentation\obj\Debug\net10.0\LibraryManagement.Presentation.pdb
 d:\Projects\LibraryManagement\LibraryManagement.Presentation\obj\Debug\net10.0\LibraryManagement.Presentation.genruntimeconfig.cache
 d:\Projects\LibraryManagement\LibraryManagement.Presentation\obj\Debug\net10.0\ref\LibraryManagement.Presentation.dll
+d:\Projects\LibraryManagement\LibraryManagement.Presentation\obj\Debug\net10.0\LibraryManagement.Presentation.sourcelink.json

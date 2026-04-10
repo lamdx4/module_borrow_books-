@@ -1,0 +1,84 @@
+@page "/pay-fines"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@using LibraryManagement.Presentation.Protos
+@inject SessionStateService SessionState
+@inject LibraryService.LibraryServiceClient LibraryClient
+
+<PageTitle>Nộp Phạt & Mở Khóa Tài Khoản</PageTitle>
+
+@if (!SessionState.IsLoggedIn)
+{
+    <div class="alert alert-warning">Vui lòng quét thẻ độc giả ở Trang Chủ trước!</div>
+    <a href="/" class="btn btn-primary">Về Trang Chủ</a>
+}
+else
+{
+    <h2>Nộp Phạt - Độc giả: @SessionState.CurrentReaderId</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm text-center">
+                <i class="bi bi-wallet2 display-1 text-secondary mb-3"></i>
+                <h5 class="mb-3">Kiểm tra dư nợ & Thanh toán hệ thống</h5>
+                <p class="text-muted">Tính năng này sẽ tự động thu thập toàn bộ các khoản phạt từ hệ thống (trễ hạn, làm hỏng sách) và tất toán. Tài khoản bị khóa sẽ được mở lại nếu quy trình thành công.</p>
+                
+                <button class="btn btn-danger btn-lg w-100 mt-2" @onclick="SubmitPayFines">KIỂM TRA & THANH TOÁN BẰNG TIỀN MẶT</button>
+            </div>
+            
+            @if (message != null)
+            {
+                <div class="alert alert-@(isSuccess ? "success" : "warning") mt-3">
+                    <h5 class="alert-heading">KẾT QUẢ GIAO DỊCH</h5>
+                    <hr />
+                    <p class="mb-0"><strong>Trạng thái:</strong> @message</p>
+                    @if (tongTien > 0)
+                    {
+                        <p class="mb-0 mt-2"><strong>Tổng phụ thu:</strong> @tongTien.ToString("N0") VNĐ</p>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private string? message;
+    private bool isSuccess = false;
+    private double tongTien = 0;
+
+    private async Task SubmitPayFines()
+    {
+        try
+        {
+            var req = new PayFineRequest 
+            { 
+                MaTheDocGia = SessionState.CurrentReaderId!
+            };
+
+            var resp = await LibraryClient.PayFineAsync(req);
+            
+            isSuccess = resp.Success;
+            tongTien = resp.TongTienDaThu;
+            
+            if (tongTien > 0)
+            {
+                message = resp.Message + ". Đã tất toán toàn bộ công nợ phí phạt.";
+            }
+            else if (isSuccess && tongTien == 0)
+            {
+                message = "Tài khoản sạch, không có bất kỳ dư nợ phạt nào chưa thanh toán.";
+            }
+            else
+            {
+                message = resp.Message;
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            tongTien = 0;
+            message = "Lỗi xử lý gRPC: " + ex.Message;
+        }
+    }
+}

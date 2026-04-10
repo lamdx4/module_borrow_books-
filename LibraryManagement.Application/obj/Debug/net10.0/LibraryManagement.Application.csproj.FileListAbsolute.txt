@@ -13,3 +13,4 @@ d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\Li
 d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\refint\LibraryManagement.Application.dll
 d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.pdb
 d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\ref\LibraryManagement.Application.dll
+d:\Projects\LibraryManagement\LibraryManagement.Application\obj\Debug\net10.0\LibraryManagement.Application.sourcelink.json

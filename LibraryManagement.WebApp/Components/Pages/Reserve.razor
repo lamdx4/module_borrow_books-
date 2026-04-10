@@ -1,0 +1,74 @@
+@page "/reserve"
+@rendermode InteractiveServer
+@using LibraryManagement.WebApp.Services
+@using LibraryManagement.Presentation.Protos
+@inject SessionStateService SessionState
+@inject LibraryService.LibraryServiceClient LibraryClient
+
+<PageTitle>Đặt Trước Sách</PageTitle>
+
+@if (!SessionState.IsLoggedIn)
+{
+    <div class="alert alert-warning">Vui lòng quét thẻ độc giả ở Trang Chủ trước!</div>
+    <a href="/" class="btn btn-primary">Về Trang Chủ</a>
+}
+else
+{
+    <h2>Đặt Trước Sách - Độc giả: @SessionState.CurrentReaderId</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm">
+                <h5 class="mb-3">Thông tin đặt trước</h5>
+                <p class="text-muted small">Lưu ý: Chỉ được phép đặt trước khi toàn bộ các ấn bản của đầu sách đều đang được mượn (Không có cuốn nào khả dụng trên kệ). Tối đa 3 cuốn/người.</p>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label font-weight-bold">Mã Đầu Sách (ISBN)</label>
+                    <input type="text" @bind="isbnInput" class="form-control form-control-lg" placeholder="VD: 978-0131103627" />
+                </div>
+                
+                <button class="btn btn-primary btn-lg w-100" disabled="@string.IsNullOrWhiteSpace(isbnInput)" @onclick="SubmitReserve">XÁC NHẬN ĐẶT TRƯỚC</button>
+            </div>
+            
+            @if (message != null)
+            {
+                <div class="alert alert-@(isSuccess ? "success" : "danger") mt-3">
+                    @message
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private string isbnInput = "";
+    private string? message;
+    private bool isSuccess = false;
+
+    private async Task SubmitReserve()
+    {
+        try
+        {
+            var req = new ReserveRequest 
+            { 
+                MaTheDocGia = SessionState.CurrentReaderId!,
+                DauSachId = isbnInput.Trim()
+            };
+
+            var resp = await LibraryClient.ReserveBookAsync(req);
+            
+            isSuccess = resp.Success;
+            message = resp.Message;
+            
+            if (isSuccess)
+            {
+                isbnInput = "";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            message = "Lỗi hệ thống gRPC: " + ex.Message;
+        }
+    }
+}
