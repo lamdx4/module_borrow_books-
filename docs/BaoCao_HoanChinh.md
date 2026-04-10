@@ -31,12 +31,23 @@ flowchart TD
     App -->|Encapsulates Logic| Dom
 ```
 
-#### 1.2 Các kỹ thuật và mẫu thiết kế (Design Patterns)
-Các kiến trúc nền tảng được áp dụng bao gồm:
-- CQRS (Command Query Responsibility Segregation) và thư viện MediatR để chia tách hệ thống xử lý Request theo hành vi.
-- Repository Pattern và UnitOfWork để quản lý logic truy xuất và lưu trữ dữ liệu tập trung.
-- In-Memory Data Store với cấu trúc `ConcurrentDictionary` để thao tác và mô phỏng giao dịch CSDL an toàn trong môi trường đa luồng tải cao.
-- Protocol Buffers và gRPC thực thi các giao tiếp xuyên client tốc độ cao.
+#### 1.2 Triết lý thiết kế Clean Architecture
+![Sơ đồ Clean Architecture](<assets/clean-arc.png>)
+
+Kiến trúc Clean Architecture được áp dụng nhằm khắc phục những sự phụ thuộc cấu trúc của các mô hình truyền thống (N-Tier/MVC). Triết lý thiết kế này định hình hệ thống thông qua các nguyên lý cốt lõi:
+- **Độc lập nền tảng công nghệ (Framework Independence):** Điểm cốt lõi là việc cô lập vùng nghiệp vụ (Tầng Domain và Application) khỏi các công cụ kỹ thuật như Cơ sở dữ liệu hay Giao diện người dùng (UI). Các quy tắc thư viện như thuật toán tính phí phạt hay giới hạn mượn/trả luôn được đóng gói chặt chẽ và độc lập tuyệt đối.
+- **Quy tắc Phụ thuộc Hướng tâm (The Dependency Rule):** Luồng tham chiếu mã nguồn (Source Code Dependencies) được quy định chặt chẽ luôn hướng từ các lớp bên ngoài vào lớp trung tâm. Tầng Domain là thực thể độc quyền độc lập, không chấp nhận bất kỳ tham chiếu ngoại vi nào.
+- **Khả năng tháo lắp linh hoạt (Pluggability & Maintainability):** Thông qua nguyên lý Đảo ngược Phụ thuộc (Dependency Inversion), các thành phần ở cấp thấp như luồng lưu trữ liệu (In-Memory Storage, Entity Framework) hoặc giao diện điểm cuối (Blazor Server) chỉ đóng vai trò như các Plugin mở rộng (Extensions). Việc nâng cấp hoặc thay thế công nghệ hạ tầng trở nên tối ưu mà không tác động tiêu cực (Side-effects) đến cấu trúc lõi của phần mềm.
+
+#### 1.3 Các kỹ thuật và mẫu thiết kế bổ trợ (Design Patterns)
+Các kiến trúc và mẫu thiết kế cốt lõi được ứng dụng bao gồm:
+- **CQRS (Command Query Responsibility Segregation):** Tách bạch rõ ràng luồng thay đổi trạng thái hệ thống (Commands như Mượn/Trả/Gia hạn) và luồng truy vấn (Queries như Lấy danh sách kho).
+- **Mediator Pattern (thông qua MediatR):** Đóng vai trò làm trạm trung chuyển (Traffic Controller), triệt tiêu sự phụ thuộc (Coupling) giữa tầng Presentation (Web API) và tầng Application (Logic).
+- **Repository Pattern & Unit of Work:** Trừu tượng hóa hoàn toàn lớp truy xuất dữ liệu (Data Access Layer). Gói gọn các thao tác lưu trữ nhiều bản ghi cục bộ vào một khối giao dịch an toàn.
+- **Dependency Injection (DI) Pattern:** Mọi tầng đều giao tiếp thông qua Interface. Toàn bộ chuỗi cung ứng service được tiêm vào Constructor vòng đời ứng dụng (Inversion of Control).
+- **Domain-Driven Design (DDD) Concepts:** Áp dụng mô hình **Rich Domain Model** (đưa hành vi thay đổi trạng thái vào tận bên trong Entity như việc Cập nhật số lượng sách trong thẻ độc giả). Hệ thống cũng dùng các **Domain Exceptions** đặc chế để bảo trợ quy tắc nghiệp vụ khép kín.
+- **RPC Pattern (gRPC & Protocol Buffers):** Thay thế REST API truyền thống, định nghĩa hợp đồng nhị phân (Contract-First) giúp giao tiếp tốc độ siêu cao giữa WebApp và Backend.
+- **Thread-safe Singleton DataStore:** Ứng dụng `ConcurrentDictionary` để mô phỏng một kho Cơ sở dữ liệu chống dẫm chân (Race-condition) tuyệt đối ngay bên trong RAM thời gian thực.
 
 ---
 
