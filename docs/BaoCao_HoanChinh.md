@@ -1,10 +1,130 @@
 ﻿# TÀI LIỆU KỸ THUẬT: HỆ THỐNG QUẢN LÝ THƯ VIỆN
 
 ## I. Phân tích thiết kế
+### 1.1 Biểu đồ Use Case tổng quát hệ thống
+Biểu đồ Use Case tổng quát cho biết các chức năng chính của hệ thống và các tác nhân tương tác với hệ thống, bao gồm Thủ thư, Độc giả và Hệ thống định kỳ. Các nghiệp vụ chính bao gồm: Mượn sách, Trả sách, Gia hạn sách, Đặt trước sách, Xử lý vi phạm / Thu tiền phạt và Gửi thông báo nhắc hạn. 
 
-*(Phần này đang để trống - sẽ được bổ sung tài liệu sơ đồ thiết kế/UML chi tiết sau)*
+<p align="center">
+  <img src="./images/ucg.png" alt="Biểu đồ Use Case tổng quát Hệ thống Quản lý Thư viện" />
+</p>
 
----
+### **1.2. Đặc tả nghiệp vụ và Biểu đồ tuần tự**
+#### **1.2.1 Nghiệp vụ Mượn sách**
+**1. Thông tin chung**
+* **Mã Usecase:** UC-01
+* **Tên Usecase:** Mượn sách
+* **Tác nhân (Actors):** Thủ thư (Primary Actor), Độc giả (Secondary Actor).
+* **Mô tả ngắn (Brief Description):** Usecase này mô tả quá trình thủ thư thao tác trên hệ thống để ghi nhận việc độc giả mượn một hoặc nhiều cuốn sách ra khỏi thư viện.
+
+**2. Điều kiện tiên quyết (Pre-conditions)**
+* Thủ thư đã đăng nhập thành công vào hệ thống quản lý thư viện.
+* Máy quét mã vạch/RFID (nếu có) đang hoạt động và kết nối bình thường với hệ thống.
+
+**3. Điều kiện đảm bảo / Kết quả (Post-conditions)**
+* Trạng thái của (các) cuốn sách trong cơ sở dữ liệu được cập nhật từ "Sẵn sàng" sang "Đang được mượn".
+* Hệ thống ghi nhận thành công giao dịch mượn (bao gồm: Mã độc giả, Mã sách, Ngày mượn, Ngày đến hạn trả, Người tạo giao dịch).
+* Số lượng sách đang mượn của độc giả được cộng dồn theo đúng thực tế.
+
+**4. Luồng sự kiện chính (Basic Flow / Happy Path)**
+Đây là kịch bản hoàn hảo khi mọi điều kiện đều hợp lệ và không có lỗi phát sinh.
+1. Độc giả mang thẻ thư viện và (các) cuốn sách muốn mượn đến quầy thủ thư.
+2. Thủ thư quét mã thẻ (hoặc nhập mã độc giả thủ công) vào giao diện "Mượn sách" trên hệ thống.
+3. Hệ thống kiểm tra, xác thực thẻ và hiển thị thông tin độc giả (Tên, Loại thẻ, Số lượng sách đang mượn hiện tại).
+4. Thủ thư quét mã vạch/RFID của từng cuốn sách độc giả muốn mượn.
+5. Hệ thống kiểm tra thông tin từng cuốn sách và nạp vào danh sách "Sách chuẩn bị mượn" trên màn hình.
+6. Thủ thư kiểm tra lại danh sách trên màn hình và nhấn nút [Xác nhận mượn].
+7. Hệ thống lưu lại giao dịch, tự động tính toán ngày đến hạn trả cho từng cuốn sách (dựa trên quy định của loại thẻ loại sách) và hiển thị thông báo thành công.
+8. Hệ thống in biên lai mượn sách (nếu có yêu cầu).
+9. Thủ thư giao lại thẻ thư viện, biên lai và sách cho độc giả. Usecase kết thúc.
+
+**5. Luồng rẽ nhánh / Ngoại lệ (Alternative Flows)**
+Đây là các kịch bản xử lý khi hệ thống phát hiện vi phạm quy tắc nghiệp vụ hoặc lỗi dữ liệu.
+* **A1. Thẻ độc giả không hợp lệ hoặc đã hết hạn:**
+  * Tại Bước 3, hệ thống phát hiện thẻ không tồn tại hoặc đã hết hạn sử dụng.
+  * Hệ thống hiển thị thông báo lỗi bằng chữ đỏ trên màn hình.
+  * Thủ thư thông báo cho độc giả về tình trạng thẻ và hướng dẫn gia hạn thẻ.
+  * Usecase kết thúc sớm.
+* **A2. Độc giả đang bị khóa tài khoản:**
+  * Tại Bước 3, hệ thống kiểm tra thấy độc giả đang có sách trả trễ hạn chưa xử lý hoặc đang nợ tiền phạt.
+  * Hệ thống block thao tác mượn và popup cảnh báo chi tiết lỗi vi phạm.
+  * Thủ thư yêu cầu độc giả hoàn tất việc trả sách cũ hoặc nộp phạt (chuyển sang Usecase Xử lý vi phạm/Thu phạt).
+  * Usecase kết thúc sớm.
+* **A3. Vượt quá hạn mức mượn sách:**
+  * Tại Bước 3 hoặc Bước 5, hệ thống tính toán tổng số sách độc giả đang giữ cộng với số sách chuẩn bị mượn vượt quá quy định của thư viện (Ví dụ: Tối đa 5 cuốn/lần).
+  * Hệ thống hiển thị cảnh báo không cho phép thêm sách vào danh sách mượn, Thủ thư yêu cầu độc giả trả bớt sách đang giữ hoặc bỏ lại bớt sách mới.
+  * Luồng quay lại Bước 4 (Tiếp tục quét những cuốn được phép).
+* **A4. Sách không được phép mượn:**
+  * Tại Bước 5, thủ thư quét mã một cuốn sách thuộc danh mục "Sách tham khảo chỉ đọc tại chỗ" hoặc "Sách đã có người khác đặt trước".
+  * Hệ thống báo lỗi từ chối đưa cuốn sách này vào danh sách.
+  * Thủ thư giải thích quy định cho độc giả và để cuốn sách đó lại.
+  * Luồng tiếp tục ở Bước 4 với các cuốn sách khác (nếu có).
+
+**6. Biểu đồ tuần tự**
+<p align="center">
+  <img src="./images/uc1.png" alt="Biểu đồ tuần tự nghiệp vụ Mượn sách" />
+</p>
+
+**1.2.2. Nghiệp vụ Trả sách**
+
+**1. Thông tin chung**
+* **Mã Usecase:** UC-02
+* **Tên Usecase:** Trả sách
+* **Tác nhân (Actors):** Thủ thư (Primary Actor), Độc giả (Secondary Actor).
+* **Mô tả ngắn (Brief Description):** Usecase này mô tả quá trình thủ thư tiếp nhận sách do độc giả trả lại, kiểm tra tình trạng vật lý, ghi nhận hoàn tất giao dịch mượn và cập nhật trạng thái mới nhất của sách trong hệ thống.
+
+**2. Điều kiện tiên quyết (Pre-conditions)**
+* Thủ thư đã đăng nhập thành công vào hệ thống quản lý thư viện.
+* Giao diện "Trả sách" đang được mở và thiết bị quét mã (mã vạch/RFID) hoạt động bình thường.
+
+**3. Điều kiện đảm bảo / Kết quả (Post-conditions)**
+* Trạng thái của (các) cuốn sách được trả được cập nhật từ "Đang được mượn" sang "Sẵn sàng" (hoặc "Hư hỏng", "Đã được đặt trước" tùy vào các luồng rẽ nhánh).
+* Hệ thống lưu thành công thông tin giao dịch trả sách.
+* Số lượng sách đang mượn của độc giả được giảm trừ chính xác theo số sách đã trả.
+
+**4. Luồng sự kiện chính (Basic Flow / Happy Path)**
+Đây là kịch bản hoàn hảo khi sách được trả đúng hạn, tình trạng sách bình thường và không có ai đặt trước.
+1. Độc giả mang sách cần trả đến quầy thủ thư.
+2. Thủ thư mở giao diện "Trả sách" và tiến hành quét mã vạch/RFID của từng cuốn sách.
+3. Hệ thống gửi mã sách đi tra cứu, tìm thấy giao dịch mượn hợp lệ và hiển thị chi tiết lên màn hình (Tên sách, Mã độc giả, Ngày mượn, Ngày đến hạn trả).
+4. Thủ thư tiến hành kiểm tra tình trạng vật lý của cuốn sách bằng mắt thường.
+5. Thủ thư xác nhận tình trạng sách "Bình thường" trên giao diện và nhấn nút [Xác nhận trả].
+6. Hệ thống tiến hành xử lý yêu cầu và cập nhật cơ sở dữ liệu:
+   * Chuyển trạng thái sách từ "Đang được mượn" sang "Sẵn sàng".
+   * Lưu lại lịch sử giao dịch trả sách.
+   * Giảm số lượng sách đang mượn trong hồ sơ của độc giả.
+   * Hiển thị thông báo trả sách thành công lên màn hình.
+7. Hệ thống in biên lai trả sách (nếu thư viện có yêu cầu in).
+8. Thủ thư thông báo hoàn tất giao dịch cho độc giả. Usecase kết thúc.
+
+**5. Luồng rẽ nhánh / Ngoại lệ (Alternative Flows & Optional Flows)**
+Đây là các kịch bản rẽ nhánh dựa trên sơ đồ (Alt/Opt blocks) khi có phát sinh vi phạm hoặc nghiệp vụ phụ.
+* **A3. Sách không tồn tại trong hệ thống:**
+  * Tại Bước 3, hệ thống tra cứu cơ sở dữ liệu và phát hiện không có mã sách này hoặc sách đang không có giao dịch mượn nào.
+  * Hệ thống hiển thị thông báo lỗi: "Không tìm thấy mã sách hoặc không có giao dịch mượn".
+  * Thủ thư để riêng cuốn sách này ra để kiểm tra xử lý thủ công sau.
+  * Luồng tiếp tục quay lại Bước 2 để quét các cuốn sách khác của độc giả (nếu có).
+* **A1. Sách trả trễ hạn:**
+  * Tại Bước 3, sau khi hiển thị chi tiết, hệ thống phát hiện ngày trả thực tế vượt quá "Ngày đến hạn trả".
+  * Hệ thống hiển thị cảnh báo trễ hạn, bao gồm: Số ngày trễ và Số tiền phạt dự kiến.
+  * Thủ thư thông báo khoản phạt cho độc giả.
+  * Luồng hệ thống mở rộng sang UC-05: Xử lý vi phạm / Thu phạt.
+  * Sau khi hoàn tất thủ tục nộp phạt, luồng quay trở lại Bước 4 (Thủ thư kiểm tra tình trạng vật lý sách).
+* **A2. Sách bị hư hỏng:**
+  * Tại Bước 4, thủ thư phát hiện sách bị rách, ướt hoặc mất trang.
+  * Thủ thư chọn tình trạng "Hư hỏng" trên giao diện thay vì "Bình thường" và nhập mô tả mức độ hỏng.
+  * Luồng hệ thống mở rộng sang UC-05: Xử lý vi phạm / Thu phạt (để lập biên bản đền bù).
+  * Lưu ý: Lúc này tại Bước 6, hệ thống sẽ cập nhật trạng thái sách thành "Hư hỏng" (thay vì "Sẵn sàng").
+* **A4. Sách có người đặt trước (Optional Flow):**
+  * Tại Bước 6, ngay sau khi ghi nhận trả sách thành công, hệ thống tự động kiểm tra danh sách đặt trước (Reservation list) cho cuốn sách này.
+  * Phát hiện có độc giả khác đang đặt trước, hệ thống tự động chạy luồng ngầm gửi thông báo (Email/SMS) cho độc giả đó đến nhận sách.
+  * Hệ thống tiếp tục tự động cập nhật trạng thái sách thành "Đã được đặt trước".
+  * Hệ thống hiển thị một thông báo đặc biệt lên màn hình cho thủ thư.
+  * Thủ thư nhận thông báo và tiến hành cất giữ riêng cuốn sách này tại quầy chờ độc giả đặt trước đến lấy (không mang xếp lại lên kệ chung). Luồng tiếp tục ở Bước 7.
+  
+**6. Sơ đồ tuần tự**
+<p align="center">
+  <img src="./images/ucg.png" alt="Biểu đồ Use Case tổng quát Hệ thống Quản lý Thư viện" />
+</p>
 
 ## II. Triển khai hệ thống
 
